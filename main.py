@@ -55,8 +55,14 @@ async def process_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return ConversationHandler.END
 
 def main():
+ def main():
+    # Initialize the database tables
+    init_db()
+    
+    # Build the application
     app = Application.builder().token(TOKEN).build()
     
+    # Add handlers
     conv_handler = ConversationHandler(
         entry_points=[CallbackQueryHandler(handle_buttons)],
         states={
@@ -68,7 +74,11 @@ def main():
     
     app.add_handler(CommandHandler("start", start))
     app.add_handler(conv_handler)
-    app.run_polling()
+    
+    # Start the bot
+    print("Bot is starting...")
+    # Use drop_pending_updates to prevent the bot from crashing on old messages
+    app.run_polling(drop_pending_updates=True, close_loop=False)
 
 if __name__ == '__main__':
-    main()
+    main()   
